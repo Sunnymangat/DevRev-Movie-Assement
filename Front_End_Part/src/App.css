@@ -1,0 +1,115 @@
+.App {
+  text-align: center;
+  color: white;
+  background-color: #2C4250;
+}
+
+.App {
+  min-height: 100vh;
+}
+.topSection {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  background-color: #2C4250;
+  font-size: 230%;
+  min-height: 12vh;
+  padding-top: 1%;
+  padding-left: 0.3%;
+  padding-right: 0.3%;
+  text-align: start;
+}
+.topSection .topSectionOne button,.topSection .topSectionThird button{
+  background-color: transparent;
+  color: white;
+  border:none;
+  cursor:pointer;
+}
+.topSectionOne {
+  grid-column: 1/2;
+}
+.topSectionSecond {
+  padding-left: 10%;
+  grid-column: 2/3;
+}
+.topSectionThird {
+  grid-column: 3/4;
+  text-align: right;
+}
+td {
+  white-space: nowrap;
+  text-align: center;
+}
+.buttonArea {
+  display: grid;
+  align-items: center;
+  
+  grid-template-columns: repeat(auto-fit, minmax(435px, 1fr));
+  background-color: #283E4C;
+  padding-top: 1.5%;
+  padding-left: 1%;
+  padding-right: 1%;
+  padding-bottom: 0.5%;
+}
+/*#282c34->#283E4C*/
+
+.bottomsection {
+  padding: 1%;
+  background-color: #2C4250;
+}
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+  color: white !important;
+}
+
+.css-cio0x1-MuiInputBase-root-MuiFilledInput-root {
+  background-color: white !important;
+  border-radius: 10px !important;
+}
+.css-5mac9p-MuiTableCell-root,.css-1nf681w-MuiTableCell-root{
+  background-color: #2C4250 !important
+}
+
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper,
+.css-m9glnp-MuiPaper-root-MuiDialog-paper {
+  background-color: #2C3D4D !important;
+}
+
+.css-1sumxir-MuiFormLabel-root-MuiInputLabel-root {
+  margin-top: 10px !important;
+  background-color: transparent !important;
+}
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  padding-top: 20px !important;
+  background-color: white !important;
+  border-radius: 10px;
+}
+
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper {
+  width: 450px;
+}
+.css-5mac9p-MuiTableCell-root {
+  line-height: 0.1rem !important;
+}
+
+.css-121c6ni-MuiButtonBase-root-MuiCheckbox-root,
+.css-5mac9p-MuiTableCell-root,
+.css-1ph7eiy-MuiTableCell-root {
+  padding:2px 8px !important;
+}
+.css-888za9-MuiInputBase-root-MuiFilledInput-root{
+  background-color: white !important;
+  border-radius: 10px !important;
+}
+.css-r6kxbm-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active,
+.css-r6kxbm-MuiButtonBase-root-MuiTableSortLabel-root:hover,
+.css-r6kxbm-MuiButtonBase-root-MuiTableSortLabel-root:focus,
+.css-r6kxbm-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active .MuiTableSortLabel-icon{
+  color:white !important;
+}
+
+
+div .MuiBox-root.css-0 canvas{
+  background: white !important;
+  min-width: 90%;
+  min-height:auto;
+  margin:1.5% !important;
+}

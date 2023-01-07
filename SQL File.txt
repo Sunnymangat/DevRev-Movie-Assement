@@ -1,0 +1,58 @@
+CREATE DATABASE movie_list;
+
+USE  movie_list;
+
+CREATE TABLE theatre(
+theatre_name  VARCHAR(20) NOT NULL,
+theatre_location  VARCHAR(20) NOT NULL,
+PRIMARY KEY (theatre_name)
+)
+
+CREATE TABLE movie(
+ movie_name VARCHAR(20) NOT NULL,
+ release_date DATE  NOT NULL,
+ movie_type VARCHAR(20)  NOT NULL,
+ movie_description LONGTEXT NOT NULL,
+ theatre_name VARCHAR(20) NOT NULL,
+ show_timings VARCHAR(10) NOT NULL,
+ ticket_price INT NOT NULL,
+ movie_validity_start DATE NOT NULL,
+ movie_validity_ends DATE NOT NULL,
+ PRIMARY KEY (movie_name),
+ CONSTRAINT FK_movie1 FOREIGN KEY (theatre_name) REFERENCES theatre(theatre_name)
+)
+
+
+CREATE TABLE theatrebook(
+theatre_name VARCHAR(20) NOT NULL, 
+movie_name VARCHAR(20) NOT NULL,
+show_timings  VARCHAR(10) NOT NULL,
+show_date DATE NOT NULL,
+capacity INT DEFAULT 60,
+PRIMARY KEY (theatre_name,show_timings,show_date),
+CONSTRAINT FK_theatrebook1 FOREIGN KEY (theatre_name) REFERENCES theatre(theatre_name),
+CONSTRAINT FK_theatrebook2 FOREIGN KEY (movie_name) REFERENCES movie(movie_name)
+)
+
+CREATE TABLE usertable(
+ user_name VARCHAR(20) NOT NULL,
+ mobile_number BIGINT NOT NULL,
+ user_password VARCHAR(20) NOT NULL,
+ user_id VARCHAR(20) NOT NULL,
+ user_type VARCHAR(10) NOT NULL,
+ PRIMARY KEY(user_id)
+);
+
+CREATE TABLE userbookedshow(
+ user_id VARCHAR(20) NOT NULL,
+ movie_name VARCHAR(20) NOT NULL,
+ show_timings VARCHAR(10) NOT NULL,
+ show_date DATE NOT NULL,
+ theatre_name VARCHAR(20) NOT NULL,
+ total_price INT NOT NULL,
+ total_seats INT NOT NULL,
+ PRIMARY KEY (user_id,movie_name,show_timings,show_date,theatre_name),
+ CONSTRAINT FK_usertable1 FOREIGN KEY (theatre_name) REFERENCES theatre(theatre_name),
+ CONSTRAINT FK_usertable2 FOREIGN KEY (movie_name) REFERENCES movie(movie_name),
+ CONSTRAINT FK_usertable3 FOREIGN KEY (user_id) REFERENCES usertable(user_id)
+);
