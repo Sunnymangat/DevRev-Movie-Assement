@@ -1,6 +1,7 @@
 # DevRev-Movie-Assement
 
-Following are some screenshot related to my created work. I will sortly arrange all the things shortly.
+Following are some of the screenshot related to my assement. I will sortly arrange all the things shortly.
+
 ![Screenshot 2023-01-08 004340](https://user-images.githubusercontent.com/66839015/211167011-890ee02e-32f1-4f97-a85e-0acf0f84f0cd.png)
 ![Screenshot 2023-01-08 004358](https://user-images.githubusercontent.com/66839015/211167013-d6b46e59-bb46-4318-b60a-00e49a3aa9dd.png)
 ![Screenshot 2023-01-08 004412](https://user-images.githubusercontent.com/66839015/211167015-e5a51bea-86c1-49fb-b96c-56b39be7be51.png)
