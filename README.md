@@ -1,4 +1,4 @@
-# DevRev-Movie-Assement
+# DevRev-MovieTicket-Assement
 
 Tech Stack Used :
 
