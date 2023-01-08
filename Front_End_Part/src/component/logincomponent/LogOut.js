@@ -75,7 +75,7 @@ const LogOut = ({open,close,setUserData}) => {
           finalDialogBox===false && 
           <Dialog fullScreen={fullScreen} open={open} onClose={close} aria-labelledby="responsive-dialog-title" sx={{p:10}}>
           <DialogTitle id="responsive-dialog-title" sx={{color:'white',textAlign:'center'}}>
-              <AccountCircleIcon sx={{fontSize:'60px'}}/><br/>Log In</DialogTitle>
+              <AccountCircleIcon sx={{fontSize:'100px'}}/><br/>Log Out</DialogTitle>
                   <div style={{paddingBottom:'2%',textAlign:'center'}}>
                   <Button sx={{color:'white',mx:1,border:1,
                                   borderColor:"#15AEF2",

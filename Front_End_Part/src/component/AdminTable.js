@@ -12,7 +12,7 @@ import { blue } from "@mui/material/colors";
 import { formatDate } from "../computations/formatdate";
 import { getComparator,stableSort } from '../computations/sorting';
 import IllusionTable from "./IllusionTable";
-import MyTableHead2 from "./MyTableHead2";
+import MyTableHead3 from "./MyTableHead3";
 
 
 const MyTableBody=({userData,setSelectedData,setRefresh })=> {
@@ -23,7 +23,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
   const [pageData, setPageData] = React.useState([]);
 
   const [rowsCount, setRowsCount] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
 
   const [order, setOrder] = React.useState('asc');
@@ -33,7 +33,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
   useEffect(() => {
     
     const totalRows = async () => {
-      await fetch("http://localhost:8080/MovieTicket/userid", {
+      await fetch("http://localhost:8080/MovieTicket/adminid", {
         method: "post",
         headers: {
           Accept: "application/json, text/plain, */*",
@@ -46,7 +46,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
     };
 
     const firstTime = async () => {
-      await fetch("http://localhost:8080/MovieTicket/userid", {
+      await fetch("http://localhost:8080/MovieTicket/adminid", {
         method: "get",
         headers: {
           Accept: "application/json, text/plain, */*",
@@ -69,7 +69,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
 
   const pageChangeToNext = async () => {
     
-    await fetch("http://localhost:8080/MovieTicket/userid", {
+    await fetch("http://localhost:8080/MovieTicket/admin", {
       method: "get",
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -162,7 +162,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
       <Paper sx={{ width: "100%", mb: 2 }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <MyTableHead2
+            <MyTableHead3
             userData={userData}
               numSelected={selected.length}
               order={order}
@@ -186,7 +186,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.movieName+row.showDate+row.show_timings+row.theatre_name}
+                      key={row.showDate+row.theatreName+row.movieName+row.theatreLocation+row.showTimings+(60-row.totalSeats)}
                       selected={isItemSelected}
                       sx={{ backgroundColor: "#2C4250",height:'80px !important'}}
                     >
@@ -195,7 +195,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
                         <Checkbox
                           sx={{
                             color: "white",
-                            visibility:(userData!==null&&userData.user_type==="admin")?"visible":"hidden",
+                            visibility:"hidden",
                             "&.Mui-checked": {
                               color: blue[400],
                             },
@@ -207,14 +207,12 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
                         />
                       </TableCell>
 
-                      <TableCell sx={{ color: "white" }}>{row.movieName}</TableCell>
-                      <TableCell sx={{ color: "white" }}>{formatDate(row.showDate)}</TableCell>
                       <TableCell sx={{ color: "white" }}>{row.theatreName}</TableCell>
+                      <TableCell sx={{ color: "white" }}>{row.movieName}</TableCell>
                       <TableCell sx={{ color: "white" }}>{row.theatreLocation}</TableCell>
-                      <TableCell sx={{ color: "white" }}>{row.ticketPrice}</TableCell>
-                      <TableCell sx={{ color: "white" }}>{row.totalSeats}</TableCell>
                       <TableCell sx={{ color: "white" }}>{row.showTimings}</TableCell>
-                      <TableCell sx={{ color: "white" }}>Booked</TableCell>
+                      <TableCell sx={{ color: "white" }}>{formatDate(row.showDate)}</TableCell>
+                      <TableCell sx={{ color: "white" }}>{60-row.totalSeats}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -230,7 +228,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
         </TableContainer>
        
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 25]}
           component="div"
           count={rowsCount}
           rowsPerPage={rowsPerPage}
@@ -247,7 +245,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
 }
 
 
-const UserBookedTicketsTable = ({userData, setSelectedData, refresh, setRefresh }) => {
+const AdminTable = ({userData, setSelectedData, refresh, setRefresh }) => {
     useEffect(() => {
         if (refresh === true){
           const timer = setTimeout(() => {
@@ -271,4 +269,4 @@ const UserBookedTicketsTable = ({userData, setSelectedData, refresh, setRefresh 
       );
 }
 
-export default UserBookedTicketsTable;
+export default AdminTable;

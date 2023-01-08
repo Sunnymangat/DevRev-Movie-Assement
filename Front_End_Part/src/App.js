@@ -8,6 +8,7 @@ import TableAreaSearch from "./component/TableAreaSearch";
 import TableAreaAdvanceSearch from "./component/TableAreaAdvanceSearch";
 import "./App.css";
 import UserBookedTicketsTable from "./component/UserBookedTicketsTable";
+import AdminTable from "./component/AdminTable";
 
 
 function App() {
@@ -57,16 +58,21 @@ function App() {
       }
       {
          searchingId !== "" && searchingId === "AdvanceSearch" &&   searchingId !== "bookingdetails" &&
-            <TableAreaAdvanceSearch
+         <>
+         <div style={{background:"#283E4C",fontSize:'30px'}}>Advance Search Details</div>
+         <TableAreaAdvanceSearch
             userData={userData}
             setSelectedData={(val) => setSelectedData(val)}
             searchingId={searchingId}
             searchIdCount={searchIdCount}
             refresh={refresh}
             setRefresh={(val) => setRefresh(val)}/>
+         </>
       }  
       {
-        searchingId !== "" && searchingId === "bookingdetails" &&
+        userData.user_id!=="" && userData.user_type!=="admin"&&searchingId !== "" && searchingId === "bookingdetails" &&
+        <>
+        <div style={{background:"#283E4C",fontSize:'30px'}}>Booking Details</div>
             <UserBookedTicketsTable
             userData={userData}
             setSelectedData={(val) => setSelectedData(val)}
@@ -74,6 +80,20 @@ function App() {
             searchIdCount={searchIdCount}
             refresh={refresh}
             setRefresh={(val) => setRefresh(val)}/>
+        </>    
+      }
+      {
+        userData.user_id!=="" && userData.user_type==="admin" && searchingId !== "" && searchingId === "bookingdetails" &&
+        <>        
+        <div style={{background:"#283E4C",fontSize:'30px'}}>Admin Booking Details</div>
+            <AdminTable
+            userData={userData}
+            setSelectedData={(val) => setSelectedData(val)}
+            searchingId={searchingId}
+            searchIdCount={searchIdCount}
+            refresh={refresh}
+            setRefresh={(val) => setRefresh(val)}/>
+        </>    
       }    
       </div>
 

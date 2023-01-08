@@ -104,8 +104,9 @@ const ButtonArea = ({
         variant="outlined"
         aria-label="outlined primary button group"
         sx={{ mt: 1 }}>
-        
-        <Button
+        {
+          searchingId!=="bookingdetails"?
+          <Button
           sx={{
             color: "white",
             px: 9,
@@ -120,6 +121,23 @@ const ButtonArea = ({
         >     
           <Box>Booking Details</Box>
         </Button>
+          :
+          <Button
+          sx={{
+            color: "white",
+            px: 10,
+            border:1,
+            borderColor:"#15AEF2",
+            whiteSpace: "nowrap",
+            "&:hover": { bgcolor: "#2bbfff",borderColor:'white' },
+            borderRightColor:(userData.user_id===""||(userData!=="" && userData.user_type!=='admin'))?"#15AEF2 !important":"transparent",
+          }}
+          onClick={()=>{setSearchingId("")}}
+          >
+            <Box>CLOSE</Box>
+          </Button> 
+        }
+        
         {
         searchingId!=='AdvanceSearch'?
           <Button

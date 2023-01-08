@@ -23,6 +23,22 @@ public class BuildConnection {
 			
 	}
 	
+	public int showSize(String user_id)  throws ClassNotFoundException, SQLException {
+		Connection con=getConnection();
+		PreparedStatement st=con.prepareStatement("SELECT COUNT(*) FROM userbookedshow WHERE user_id=?");
+		st.setString(1,user_id );
+		ResultSet rs=st.executeQuery();
+		rs.next();
+		return rs.getInt(1);
+	}
+	
+	public int showTheatreSize()  throws ClassNotFoundException, SQLException {
+		Connection con=getConnection();
+		PreparedStatement st=con.prepareStatement("SELECT COUNT(*) FROM theatrebook");
+		ResultSet rs=st.executeQuery();
+		rs.next();
+		return rs.getInt(1);
+	}
 	
 	public int dbSize() throws ClassNotFoundException, SQLException {
 		Connection con=getConnection();
@@ -83,6 +99,83 @@ public class BuildConnection {
 
 	}
 	
+	public ArrayList<HeadClass> getData(int offset,int fetch,String user_id) throws ClassNotFoundException, SQLException{
+		Connection con=getConnection();
+		String theatreName,movieName,showTimings;
+		int ticketPrice,totalSeats;
+		Date showDate;
+		
+		ArrayList<HeadClass> W=new ArrayList<HeadClass>();
+		PreparedStatement st=con.prepareStatement("SELECT * FROM userbookedshow WHERE user_id=? ORDER BY movie_name LIMIT ? OFFSET ?");
+		st.setString(1, user_id);
+		st.setInt(2, fetch);
+		st.setInt(3, offset);
+		
+		ResultSet rs=st.executeQuery();
+		
+		while(rs.next() ) {
+			HeadClass w=new HeadClass();
+			
+			movieName=rs.getString("movie_name");
+			showTimings=rs.getString("show_timings");
+			showDate=rs.getDate("show_date");
+			theatreName=rs.getString("theatre_name");
+			ticketPrice=rs.getInt("total_price");
+			totalSeats=rs.getInt("total_seats");
+			PreparedStatement st1=con.prepareStatement("SELECT theatre_location FROM theatre where theatre_name=?");
+			st1.setString(1,theatreName);
+			ResultSet temp=st1.executeQuery();
+			temp.next();
+			String theatreLocation=temp.getString(1);
+			w.setMovieName(movieName);
+			w.setShowTimings(showTimings);
+			w.setShowDate(showDate);
+			w.setTheatreName(theatreName);
+			w.setTicketPrice(ticketPrice);
+			w.setTotalSeats(totalSeats);
+			w.setTheatreLocation(theatreLocation);
+			W.add(w);
+		}
+		return W;
+	}
+	
+	public ArrayList<HeadClass> getDataTheatre(int offset,int fetch) throws ClassNotFoundException, SQLException{
+		Connection con=getConnection();
+		String theatreName,movieName,showTimings;
+		int totalSeats;
+		Date showDate;
+		
+		ArrayList<HeadClass> W=new ArrayList<HeadClass>();
+		PreparedStatement st=con.prepareStatement("SELECT * FROM theatrebook ORDER BY movie_name LIMIT ? OFFSET ?");
+		st.setInt(1, fetch);
+		st.setInt(2, offset);
+		
+		ResultSet rs=st.executeQuery();
+		
+		while(rs.next() ) {
+			HeadClass w=new HeadClass();
+			
+			theatreName=rs.getString("theatre_name");
+			movieName=rs.getString("movie_name");
+			showTimings=rs.getString("show_timings");
+			showDate=rs.getDate("show_date");
+			totalSeats=rs.getInt("capacity");
+			
+			PreparedStatement st1=con.prepareStatement("SELECT theatre_location FROM theatre where theatre_name=?");
+			st1.setString(1,theatreName);
+			ResultSet temp=st1.executeQuery();
+			temp.next();
+			String theatreLocation=temp.getString(1);	
+			w.setMovieName(movieName);
+			w.setShowTimings(showTimings);
+			w.setShowDate(showDate);
+			w.setTheatreName(theatreName);
+			w.setTotalSeats(totalSeats);
+			w.setTheatreLocation(theatreLocation);
+			W.add(w);
+		}
+		return W;
+	}
 	
 	public ArrayList<HeadClass> getData(int offset,int fetch) throws ClassNotFoundException, SQLException{
 		Connection con=getConnection();
@@ -121,7 +214,6 @@ public class BuildConnection {
 			w.setTicketPrice(ticketPrice);
 			w.setMovieValidityStart(movieValidityStart);
 			w.setMovieValidityEnds(movieValidityEnds);
-			System.out.println(movieName);
 			W.add(w);
 		}
 		return W;
