@@ -1,8 +1,8 @@
 # DevRev-MovieTicket-Assement
 
-Update Files With Testing inside Final Branch
+Final Branch consist of actual main project after full testing.
 
-Testing Branch containing intial phase of the prject
+Testing Branch containing intial phase of the prject.(So, some files are missing there).
 
 Tech Stack Used :
 
