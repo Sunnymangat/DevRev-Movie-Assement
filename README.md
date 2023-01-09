@@ -1,5 +1,9 @@
 # DevRev-MovieTicket-Assement
 
+Update Files With Testing inside Final Branch
+
+Testing Branch containing intial phase of the prject
+
 Tech Stack Used :
 
 Front-end: ReactJs, HTML, CSS, JavaScript
