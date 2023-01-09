@@ -53,8 +53,8 @@ const SignUp = ({open,close}) => {
     
   const mychecker=()=>{
     let checking=true;
-    for (const [key, value] of Object.entries(field)) {
-      
+    for (let [key, value] of Object.entries(field)) {
+      value=value.trim();
       if(value===""){
         checking=false;
         let error=key.toUpperCase();
@@ -99,14 +99,17 @@ const SignUp = ({open,close}) => {
   async function signUp(){
     
     if(mychecker()===false)return;   
-    
+    const field1={
+      user_name:field.user_name.trim(),mobile_number:field.mobile_number.trim(),
+      user_id:field.user_id.trim(),user_password:field.user_password.trim()
+    };
     await fetch("http://localhost:8080/MovieTicket/newuser", {
       method: 'post',
       headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
       },
-      body:JSON.stringify(Object.assign(field)),
+      body:JSON.stringify(Object.assign(field1)),
     }).then(res => res.json()).then(res => setResponse(res))
     .then(setFinalDialogBox(true));
   }

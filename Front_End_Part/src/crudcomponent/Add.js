@@ -12,7 +12,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {checkdate,movieType} from '../computations/regularexp';
 import { useTheme } from '@mui/material/styles';
-
+import { formatDate } from '../computations/formatdate'
 
 const Add = ({open,close, setRefresh}) => {
 
@@ -60,8 +60,8 @@ const Add = ({open,close, setRefresh}) => {
     
   const mychecker=()=>{
     let checking=true;
-    for (const [key, value] of Object.entries(field)) {
-      
+    for (let [key, value] of Object.entries(field)) {
+      value=value.trim();
       if(value===""){
         checking=false;
         let error=key.toUpperCase();
@@ -97,11 +97,18 @@ const Add = ({open,close, setRefresh}) => {
           checking=value.split(/\b\S+\b/g).length>=10 && value.split(/\b\S+\b/g).length<=15;
           break;
         case 'movie_validity_start':
-          checking=checkdate(`${value}`);
+          checking=(formatDate(field.release_date)<=value);        
+          if(checking===false){
+            setConditionChecker(key.replace(/_/g," ").toUpperCase()+" date must be greater or equal to movie release date");
+            return false;
+          }
           break;
-
         case 'movie_validity_ends': 
-          checking=checkdate(`${value}`)   
+          checking=(formatDate(field.release_date)<=value && (formatDate(field.movie_validity_start)<=value))
+          if(checking===false){
+            setConditionChecker(key.replace(/_/g," ").toUpperCase()+" date must be greater or equal to movie validity start");
+            return false;
+          }
           break;
 
         default:
@@ -128,14 +135,24 @@ const Add = ({open,close, setRefresh}) => {
   async function add(){
     
     if(mychecker()===false)return;   
-    
+    const field1={
+      movie_name:field.movie_name.trim(),
+      movie_type:field.movie_type.trim(),
+      release_date:field.release_date.trim(),
+      theatre_name:field.theatre_name.trim(),
+      show_timings:field.show_timings.trim(),
+      ticket_price:field.ticket_price.trim(),
+      movie_validity_start:field.movie_validity_start.trim(),
+      movie_validity_ends:field.movie_validity_ends.trim(),
+      movie_description:field.movie_description.trim()
+    };
     await fetch("http://localhost:8080/MovieTicket/ad", {
       method: 'post',
       headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
       },
-      body:JSON.stringify(Object.assign(field)),
+      body:JSON.stringify(Object.assign(field1)),
     }).then(res => res.json()).then(res => setResponse(res))
     .then(setFinalDialogBox(true));
   }

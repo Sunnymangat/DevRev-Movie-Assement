@@ -43,6 +43,9 @@ public class BookTicket extends HttpServlet{
 		}else if(check==0){
 			String respp=gson.toJson("Fail");
 			res.getWriter().println(respp);
+		}else if(check==2) {
+			String respp=gson.toJson("Fail2");
+			res.getWriter().println(respp);
 		}
 	}
 }

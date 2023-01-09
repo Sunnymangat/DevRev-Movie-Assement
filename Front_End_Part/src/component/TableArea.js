@@ -26,7 +26,7 @@ import { useTheme } from "@mui/material/styles";
 import {checkdate} from '../computations/regularexp';
 import IllusionTable from "./IllusionTable";
 
-const BookShow=({userData,movieName,theatreName,open,close,setRefresh})=>{
+const BookShow=({movieValidityStart,movieValidityEnds,userData,movieName,theatreName,open,close,setRefresh})=>{
   const theme = useTheme();
   const small=useMediaQuery(theme.breakpoints.down('sm'));
   const [response,setResponse]=React.useState(null);
@@ -73,17 +73,34 @@ const BookShow=({userData,movieName,theatreName,open,close,setRefresh})=>{
   const mychecker=()=>{
     let checking=true;
     
-    for (const [key, value] of Object.entries(userRequirements)) {
+    for (let [key, value] of Object.entries(userRequirements)) {
+      value=value.trim();
       if(key==='show_timings'){
         checking=(value==='AM'||value==='am'||value==='Am'
                   ||value==='PM'||value==='pm'||value==='Pm'
                   ||value==='AM/PM'||value==='am/pm'||value==='Am/Pm');
       }else if(key==='show_date'){
         checking=checkdate(value);
+        if(formatDate(new Date())>value){
+          setConditionChecker("Not allowed to use past dates");
+          checking=false;
+          break;
+        }
+        if(formatDate(movieValidityStart)>value){
+          setConditionChecker("Select any date after on or after movie released");
+          checking=false
+          break;
+        }
+        if(value>formatDate(movieValidityEnds)){
+          setConditionChecker("Show not available for selected day");
+          checking=false
+          break;
+        }
+        
       }else if(key==='seat_booked'){
         const v1=value.trim();
         if(v1>=1 && v1<=5)checking=true;
-        else checking=false;
+        else{checking=false; setConditionChecker(key.replace(/_/g," ").toUpperCase() +" required values from 1 to 5");break;}
       }
       if(checking===false ){
         let error=key;
@@ -101,15 +118,23 @@ const BookShow=({userData,movieName,theatreName,open,close,setRefresh})=>{
 
   const addShow=async()=>{
     
-    if(mychecker()===false)return;  
-    
+    if(mychecker()===false)return;
+    const userRequirements1={
+      user_id:userData.user_id.trim(),
+      user_type:userData.user_type.trim(),
+      movie_name:movieName.trim(),
+      theatre_name:theatreName.trim(),
+      show_timings:userRequirements.show_timings.trim(),
+      show_date:userRequirements.show_date.trim(),
+      seat_booked:userRequirements.seat_booked.trim()
+    };
     await fetch("http://localhost:8080/MovieTicket/bookticket",{
       method: "post",
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
       },
-      body:JSON.stringify(userRequirements),
+      body:JSON.stringify(userRequirements1),
     }).then((res)=>res.json()).then(res => setResponse(res))
     .then(setFinalDialogBox(true));
   }
@@ -141,6 +166,19 @@ const BookShow=({userData,movieName,theatreName,open,close,setRefresh})=>{
         <Dialog fullScreen={small} open={open} onClose={()=>closeDialogFalse()} aria-labelledby="responsive-dialog-title">
         <DialogTitle id="responsive-dialog-title" sx={{color:'white'}}>Book Show</DialogTitle>
         <DialogContent sx={{color:'white',textAlign:'center',fontSize:'18px'}}>Booking Failed!!!</DialogContent>
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <DialogActions>
+            <Button autoFocus onClick={()=>goBack()} type="submit" sx={{border:'1px solid white',color:'white',pl:10,pr:11,ml:-1}}>Back</Button>
+            <Button onClick={()=>closeDialogFalse()} autoFocus sx={{border:'1px solid white',color:'white',pl:9,pr:9}}>Close</Button>
+          </DialogActions>
+        </Box>
+        </Dialog>
+       }
+       {
+        finalDialogBox===true && response==="Fail2" &&
+        <Dialog fullScreen={small} open={open} onClose={()=>closeDialogFalse()} aria-labelledby="responsive-dialog-title">
+        <DialogTitle id="responsive-dialog-title" sx={{color:'white'}}>Book Show</DialogTitle>
+        <DialogContent sx={{color:'white',textAlign:'center',fontSize:'18px'}}>Already Booked {userRequirements.movie_name+' '+userRequirements.show_timings} show for {userRequirements.show_date} !!!</DialogContent>
         <Box display="flex" alignItems="center" justifyContent="center">
           <DialogActions>
             <Button autoFocus onClick={()=>goBack()} type="submit" sx={{border:'1px solid white',color:'white',pl:10,pr:11,ml:-1}}>Back</Button>
@@ -193,12 +231,16 @@ const BookShow=({userData,movieName,theatreName,open,close,setRefresh})=>{
 }
 
 const MyTableBody=({userData,setSelectedData,setRefresh })=> {
+  
+  
   const [page, setPage] = React.useState(0);
   const [rows, setRows] = React.useState([]);
   const [modal, setModal] = React.useState({
     open:false,
     movie_name:"",
-    theatre_name:""
+    theatre_name:"",
+    movieValidityStart:"",
+    movieValidityEnds:"",
   });
 
   const [selected, setSelected] = React.useState([]);
@@ -394,7 +436,8 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
                       <TableCell sx={{ color: "white" }}>{row.showTimings}</TableCell>
                       <TableCell sx={{ color: "white" }}>
                         <Button 
-                        onClick={()=>setModal({open:true,movie_name:row.movieName,theatre_name:row.theatreName})}
+                        onClick={()=>setModal({open:true,movie_name:row.movieName,theatre_name:row.theatreName,
+                                              movieValidityStart:row.movieValidityStart,movieValidityEnds:row.movieValidityEnds})}
                         sx={{
                           color: "white",
                           px: 4,
@@ -441,7 +484,7 @@ const MyTableBody=({userData,setSelectedData,setRefresh })=> {
             : 
             (
             <BookShow userData={userData} setModal={(v)=>setModal(v)} open={modal.open} movieName={modal.movie_name} theatreName={modal.theatre_name} 
-              close={() => setModal({open:false,movie_name:"",theatre_name:""})} setRefresh={setRefresh}/>
+              movieValidityStart={modal.movieValidityStart} movieValidityEnds={modal.movieValidityEnds} close={() => setModal({open:false,movie_name:"",theatre_name:"",movieValidityStart:"",movieValidityEnds:""})} setRefresh={setRefresh}/>
             )
           }
     </>

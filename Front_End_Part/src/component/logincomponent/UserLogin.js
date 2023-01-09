@@ -65,12 +65,19 @@ const UserLogin = ({open,close,setUserData}) => {
       }
       switch(`${key}`){  
         case 'user_id':
-            var mailformat = /^([A-Za-z0-9_])+@([A-Za-z0-9_])+([A-Za-z]{2,4})$/;
-            checking=value.match(mailformat);
+          const value1=value.trim();
+            function validateEmail(email) {
+              var re = /\S+@\S+\.\S+/;
+              return re.test(email);
+            }
+            checking=value1!=="" && validateEmail(value1);
             break;
         case 'user_password':
-            checking=value.length>=6;
+            checking=value.trim().length>=6;
             break;
+        case 'user_mobile':
+          checking=value.trim().length===10;
+          break;    
         default:
             break;
       }
@@ -78,7 +85,7 @@ const UserLogin = ({open,close,setUserData}) => {
       if(checking===false){
         let error=key.toUpperCase();
         error=error.replace(/_/g," ");
-        setConditionChecker(error+" value:- " + value +" is not satisfying required conditions");
+        setConditionChecker(error+" is not satisfying required conditions");
         break;
       }
     }
@@ -91,8 +98,9 @@ const UserLogin = ({open,close,setUserData}) => {
 
   async function login(){
     
-    if(mychecker()===false)return;   
-    setnewfields({...field,"user_type":userType});
+    if(mychecker()===false)return;
+    const field1={user_id:field.user_id.trim(),user_password:field.user_password.trim(),
+                user_mobile:field.user_mobile.trim(),user_type:field.user_type.trim()}
 
     await fetch("http://localhost:8080/MovieTicket/loginuser", {
       method: 'post',
@@ -100,7 +108,7 @@ const UserLogin = ({open,close,setUserData}) => {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
       },
-      body:JSON.stringify(Object.assign(field)),
+      body:JSON.stringify(Object.assign(field1)),
     }).then(res => res.json()).then(res => {if(res==="Success"){setUserData({user_id:field.user_id,user_type:userType})}setResponse(res)})
     .then(setFinalDialogBox(true));
   }

@@ -72,17 +72,18 @@ const ButtonArea = ({
   }
 
   const func = (e) => {
-    
     if (movieId!=="" && (e.key === "Enter" || e.key === "NumpadEnter")) {
-      searchID();
+      const newMovie=movieId.trim();
+      if(newMovie!==""){searchID();setMovieId(newMovie);}
     }
 
   };
 
   const func1 = () => {
-  
-    if (movieId!=="") {
+    const newMovie=movieId.trim();
+    if (newMovie!=="") {
       searchID();
+      setMovieId(newMovie);
     }
 
   };
@@ -237,7 +238,7 @@ const ButtonArea = ({
             name="customerId"
             value={movieId ? movieId : ""}
             onChange={searchCustomerId}
-            onKeyDown={(e) => func(e)}
+            onKeyDown={(e) => {func(e)}}
             endAdornment={
               <InputAdornment position="end">
                <SearchIcon onClick={()=>{func1()}} sx={{cursor:'pointer'}}/>

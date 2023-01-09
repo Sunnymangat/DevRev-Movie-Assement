@@ -349,6 +349,7 @@ public int bookTicket(HashMap<String, String> json) throws ClassNotFoundExceptio
 		
 		Connection con=getConnection();
 		String user_id=json.get("user_id");
+		System.out.println(user_id);
 		String movie_name=json.get("movie_name");
 		String theatre_name=json.get("theatre_name");
 		String show_timings=json.get("show_timings");
@@ -370,8 +371,17 @@ public int bookTicket(HashMap<String, String> json) throws ClassNotFoundExceptio
 			ResultSet a=pt.executeQuery();
 			a.next();
 			if(a.getInt(1)!=0 && a.getInt(1)>=Integer.parseInt(seat_booked)) {
-				int capa=a.getInt(1)-Integer.parseInt(seat_booked);
+				pt=con.prepareStatement("SELECT EXISTS(SELECT * FROM userbookedshow WHERE user_id=? AND movie_name=? AND show_timings=? AND show_date=? AND theatre_name=?)");
+				pt.setString(1, user_id);
+				pt.setString(2, movie_name);
+				pt.setString(3, show_timings);
+				pt.setString(4, show_date);
+				pt.setString(5, theatre_name);
+				ResultSet tt=pt.executeQuery();
+				tt.next();
+				if(tt.getInt(1) == 1)return 2;
 				
+				int capa=a.getInt(1)-Integer.parseInt(seat_booked);
 				pt=con.prepareStatement("INSERT INTO userbookedshow VALUES(?,?,?,?,?,?,?)");
 				pt.setString(1,user_id);
 				pt.setString(2, movie_name);
@@ -422,7 +432,6 @@ public int bookTicket(HashMap<String, String> json) throws ClassNotFoundExceptio
 		String theatre_name=json.get("theatre_name");
 		String show_timings=json.get("show_timings");
 		String show_date=json.get("show_date");
-		
 		try {
 			PreparedStatement pt=con.prepareStatement("SELECT EXISTS(SELECT * FROM theatrebook where theatre_name=?  AND movie_name=?  AND show_timings=? AND show_date=?)");	
 			pt.setString(1, theatre_name);

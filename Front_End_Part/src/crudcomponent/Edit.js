@@ -12,6 +12,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import {movieType,checkdate} from '../computations/regularexp';
 import { useTheme } from '@mui/material/styles';
+import { formatDate } from '../computations/formatdate'
+
 
 const Edit = ({open,close,selectedCheckboxes,setRefresh}) => {
 
@@ -59,14 +61,15 @@ const Edit = ({open,close,selectedCheckboxes,setRefresh}) => {
   }
   const mychecker=()=>{
     let checking=true;
-    for (const [key, value] of Object.entries(edited)) {
-      
+    for (let [key, value] of Object.entries(edited)) {
+      value=value.trim()
+      let checking=true;
       if(value===""){
         checking=false;
         let error=key.toUpperCase();
         error=error.replace(/_/g," ");
         setConditionChecker(error +" required some values");
-        break;
+        return false;
       }
 
       switch(`${key}`){
@@ -92,16 +95,23 @@ const Edit = ({open,close,selectedCheckboxes,setRefresh}) => {
           checking=value.split(/\b\S+\b/g).length>=10 && value.split(/\b\S+\b/g).length<=15;
           break;
         case 'movie_validity_start':
-          checking=checkdate(`${value}`);
+          checking=(formatDate(edited.release_date)<=value);        
+          if(checking===false){
+            setConditionChecker(key.replace(/_/g," ").toUpperCase()+" date must be greater or equal to movie release date");
+            return false;
+          }
           break;
 
         case 'movie_validity_ends': 
-          checking=checkdate(`${value}`)   
-          break;
+        checking=(formatDate(edited.release_date)<=value && (formatDate(edited.movie_validity_start)<=value))
+        if(checking===false){
+          setConditionChecker(key.replace(/_/g," ").toUpperCase()+" date must be greater or equal to movie validity start");
+          return false;
+        }
+        break;
 
         default:
           break;
-
       }
 
       if(checking===false){
@@ -125,20 +135,20 @@ const Edit = ({open,close,selectedCheckboxes,setRefresh}) => {
   async function edit(){
   
     if(mychecker()===false)return;
-  
+    
     await fetch("http://localhost:8080/MovieTicket/edit", {
       method: 'post',
       headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json',
-      'release_date':edited.release_date,
-      'movie_type':edited.movie_type,
-      'movie_description':edited.movie_description,
-      'theatre_name':edited.theatre_name,
-      'show_timings':edited.show_timings,
-      'movie_validity_start':edited.movie_validity_start,
-      'movie_validity_ends':edited.movie_validity_ends,
-      'ticket_price':edited.ticket_price,
+      'release_date':edited.release_date.trim(),
+      'movie_type':edited.movie_type.trim(),
+      'movie_description':edited.movie_description.trim(),
+      'theatre_name':edited.theatre_name.trim(),
+      'show_timings':edited.show_timings.trim(),
+      'movie_validity_start':edited.movie_validity_start.trim(),
+      'movie_validity_ends':edited.movie_validity_ends.trim(),
+      'ticket_price':edited.ticket_price.trim(),
       },
       body:JSON.stringify(Object.assign({},selectedCheckboxes)),
     }).then(res => res.json()).then(res => setResponse(res))

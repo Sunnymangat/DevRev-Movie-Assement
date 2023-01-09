@@ -55,11 +55,12 @@ const AnalyticsViewDialogBox=({open,close,setRefresh})=>{
     
     let checking=true;
     
-    for (const [key, value] of Object.entries(newTheatre)) {
+    for (let [key, value] of Object.entries(newTheatre)) {
+      value=value.trim();
       if(key==='theatre_name'){
         checking=value.length<=20 && value.length>=3;
       }else if(key==='theatre_location'){
-        checking=value.split(/\b\S+\b/g).length>=1 && value.split(/\b\S+\b/g).length<=10;
+        checking=value.length>=5&&value.length<=20;
       }
       if(checking===false ){
         let error=key;
@@ -78,14 +79,17 @@ const AnalyticsViewDialogBox=({open,close,setRefresh})=>{
   const addTheatre=async()=>{
     
     if(mychecker()===false)return;  
-    
+    const newTheatre1={
+      theatre_name:newTheatre.theatre_name.trim(),
+      theatre_location:newTheatre.theatre_location.trim(),
+    };
     await fetch("http://localhost:8080/MovieTicket/theatre",{
       method: "post",
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
       },
-      body:JSON.stringify(newTheatre),
+      body:JSON.stringify(newTheatre1),
     }).then((res)=>res.json()).then(res => setResponse(res))
     .then(setFinalDialogBox(true));;
 
